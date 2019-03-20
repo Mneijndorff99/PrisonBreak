@@ -22,29 +22,53 @@ public class AIMovement : MonoBehaviour
     {
         navMesh.autoBraking = false;
         ani.SetBool("walking", true);
-        GotoNextPoint();
-    }
-
-    void GotoNextPoint()
-    {
-        navMesh.destination = wayPoints[Random.Range(0, wayPoints.Count)].transform.position;
-        
-        //Debug.Log(navMesh.destination);
+        SetState(States.Walking);
+        StartCoroutine("WaitForNextWaypoint");
     }
 
     void Update()
     {
+        distance = Vector3.Distance(player.transform.position, transform.position);
+        if (distance < 10)
+        {
+
+        }
+        bool canSee = CanSeeTarget();
+
+        if (canSee && state == States.Walking)
+        {
+            SetState(States.Chasing);
+        }
+
+        if (!canSee)
+        {
+            if (state == States.Searching)
+            {
+                SetState(States.Walking);
+            }
+        }
+
         switch (state)
         {
             case States.Walking:
                 break;
             case States.Searching:
+                if (navMesh.remainingDistance < .5f)
+                    SetState(States.Walking);
                 break;
             case States.Chasing:
+                if (CanSeeTarget())
+                {
+                    navMesh.SetDestination(player.transform.position);
+                }
+                else
+                {
+                    SetState(States.Searching);
+                }
                 break;
         }
-        if (!navMesh.pathPending && navMesh.remainingDistance < 0.5f)
-            StartCoroutine("WaitForNextWaypoint");
+        //if (!navMesh.pathPending && navMesh.remainingDistance < 0.5f)
+        //    StartCoroutine("WaitForNextWaypoint");
         //distance =  Vector3.Distance(GameObject.FindGameObjectWithTag("Player").transform.position, transform.position);
 
         //if (distance < 20)
@@ -68,51 +92,73 @@ public class AIMovement : MonoBehaviour
         switch (newState)
         {
             case States.Walking:
-                GotoNextPoint();
-                //StartCoroutine("WaitForNextWaypoint");
                 break;
             case States.Searching:
+                navMesh.SetDestination(lastSeen);
                 break;
             case States.Chasing:
-                target = player.transform;
+                lastSeen = player.transform.position;
                 break;
         }
 
         state = newState;
     }
 
-    private void OnCollisionStay(Collision collision)
+    public bool CanSeeTarget()
     {
-        if (collision.gameObject == player)
-        {
-            Vector3 dir = collision.transform.position - transform.position;
-            float angle = Vector3.Angle(dir, transform.forward);
+        RaycastHit hit;
 
-            if (angle < fieldOfView * 0.5f)
+        Vector3 direction = player.transform.position - transform.position;
+        if (Physics.Raycast(transform.position, direction, out hit))
+        {
+            if (hit.collider.gameObject.CompareTag("Player"))
             {
-                RaycastHit hit;
-                if (Physics.Raycast(transform.position + transform.up, dir.normalized, out hit))
+                Debug.Log("I hitted the player");
+                float angle = Vector3.Angle(transform.forward, direction);
+                if (angle < fieldOfView / 2)
                 {
-                    if (hit.collider.gameObject == player)
-                    {
-                        SetState(States.Chasing);
-                        Debug.Log("I see the player");
-                    }
-                    else
-                    {
-                        SetState(States.Walking);
-                    }
+                    Debug.Log("the player is in my FOV");
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            Debug.Log("I See nothing");
+            return false;
         }
     }
 
+    //IEnumerator WaitForNextWaypoint()
+    //{
+    //    ani.SetBool("walking", false);
+    //    yield return new WaitForSeconds(6);
+    //    ani.SetBool("walking", true);
+    //    GotoNextPoint();
+    //}
+
     IEnumerator WaitForNextWaypoint()
     {
-        ani.SetBool("walking", false);
-        yield return new WaitForSeconds(6);
-        ani.SetBool("walking", true);
-        GotoNextPoint();
+        while (true)
+        {
+            if (state == States.Walking)
+            {
+                Vector3 destination = wayPoints[Random.Range(0, wayPoints.Count)].transform.position;
+                Debug.Log(destination);
+                navMesh.SetDestination(destination);
+            }
+
+            yield return new WaitForSeconds(Random.Range(20, 30));
+        }
+
     }
 }
 

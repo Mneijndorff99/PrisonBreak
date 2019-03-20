@@ -21,8 +21,9 @@ public class WEb : MonoBehaviour
             }
             else
             {
-                Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
+                //Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
                 JSONNode data = JSON.Parse(webRequest.downloadHandler.text);
+                Debug.Log(webRequest.downloadHandler.text);
                 string kills = data["stats"]["p2"]["kills"]["value"].Value;
                 Debug.Log(kills);
                 int killsValue;
@@ -35,8 +36,7 @@ public class WEb : MonoBehaviour
             }
         }
     }
-
-
+    
 
     // Start is called before the first frame update
     void Start()
