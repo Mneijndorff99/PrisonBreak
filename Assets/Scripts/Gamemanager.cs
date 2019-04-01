@@ -11,6 +11,8 @@ public class Gamemanager : MonoBehaviour
     public int totalRaftparts = 0;
     public GameObject door;
     public TMP_InputField input;
+    public TMP_InputField speedInput;
+
 
     private void Awake()
     {

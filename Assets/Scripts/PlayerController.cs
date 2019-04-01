@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityStandardAssets.Characters.FirstPerson;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        StartCoroutine(TypeText.instance.ShowDialogText("This place is a nightmare I can't stay here my whole life. I need to get out, only I heard there is a guard somewhere!"));
     }
 
     // Update is called once per frame
@@ -35,6 +36,7 @@ public class PlayerController : MonoBehaviour
     {
         InventoryUI.instance.gameObject.SetActive(value);
         Gamemanager.instance.input.gameObject.SetActive(value);
+        Gamemanager.instance.speedInput.gameObject.SetActive(value);
         GetComponent<FirstPersonController>().enabled = !value;
         Cursor.lockState = value ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = value ? Cursor.visible = true : Cursor.visible = false;
@@ -52,29 +54,37 @@ public class PlayerController : MonoBehaviour
 
             if(hit.collider.gameObject.tag == "Escape")
             {
-                for (int y = 0; y < Inventory.instance.items.Count; y++)
+                if(paddle1 && paddle2 && boat.activeInHierarchy == true)
                 {
-                    if(Inventory.instance.items[y] is RaftItem)
+                    StartCoroutine(TypeText.instance.ShowDialogText("You have found al the parts you escaped the prison enjoy your freedom!"));
+                    StartCoroutine(ExitGame());
+                }
+                else
+                {
+                    for (int y = 0; y < Inventory.instance.items.Count; y++)
                     {
-                        if(Inventory.instance.items[y].name == "Paddle1")
+                        if (Inventory.instance.items[y] is RaftItem)
                         {
-                            paddle1.SetActive(true);
-                            Inventory.instance.items.Remove(Inventory.instance.items[y]);
+                            if (Inventory.instance.items[y].name == "Paddle1")
+                            {
+                                paddle1.SetActive(true);
+                                Inventory.instance.items.Remove(Inventory.instance.items[y]);
+                            }
+                            else if (Inventory.instance.items[y].name == "Paddle2")
+                            {
+                                paddle2.SetActive(true);
+                                Inventory.instance.items.Remove(Inventory.instance.items[y]);
+                            }
+                            else if (Inventory.instance.items[y].name == "BoatPart")
+                            {
+                                boat.SetActive(true);
+                                Inventory.instance.items.Remove(Inventory.instance.items[y]);
+                            }
                         }
-                        else if (Inventory.instance.items[y].name == "Paddle2")
+                        else
                         {
-                            paddle2.SetActive(true);
-                            Inventory.instance.items.Remove(Inventory.instance.items[y]);
+                            StartCoroutine(TypeText.instance.ShowDialogText("You have to find al the raft parts to escape this prison!"));
                         }
-                        else if (Inventory.instance.items[y].name == "BoatPart")
-                        {
-                            boat.SetActive(true);
-                            Inventory.instance.items.Remove(Inventory.instance.items[y]);
-                        }
-                    }
-                    else
-                    {
-                        StartCoroutine(TypeText.instance.ShowDialogText("You have to find al the raft parts to escape this prison!"));
                     }
                 }
             }
@@ -85,6 +95,12 @@ public class PlayerController : MonoBehaviour
                 i.Action();
             }
         }
+    }
+
+    public IEnumerator ExitGame()
+    {
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene(0);
     }
 
     
