@@ -6,7 +6,7 @@ public class Inventory : MonoBehaviour
 {
     public static Inventory instance;
 
-    private List<Item> items;
+    public List<Item> items;
     public float totalWeight;
     public float maximumWeight = 10.0f;
 

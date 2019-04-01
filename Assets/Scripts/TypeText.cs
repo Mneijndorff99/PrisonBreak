@@ -16,13 +16,17 @@ public class TypeText : MonoBehaviour
 
     public IEnumerator ShowDialogText(string fullText)
     {
-        for (int i = 0; i < fullText.Length; i++)
+        if(dialogBox.text == "")
         {
-            currentText = fullText.Substring(0, i +1 );
-            dialogBox.text = currentText;
-            yield return new WaitForSeconds(delay);
+            for (int i = 0; i < fullText.Length; i++)
+            {
+                currentText = fullText.Substring(0, i +1 );
+                dialogBox.text = currentText;
+                yield return new WaitForSeconds(delay);
+            }
+            StartCoroutine(EmptyTextBox());
         }
-        StartCoroutine(EmptyTextBox());
+
     }
 
     IEnumerator EmptyTextBox()

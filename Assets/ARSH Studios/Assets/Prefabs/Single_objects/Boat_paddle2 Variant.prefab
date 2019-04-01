@@ -57,6 +57,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7004560633397654498, guid: 27f936bf3b479504eb87ddc5158f673f,
         type: 3}
+      propertyPath: objectName
+      value: Paddle2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7004560633397654498, guid: 27f936bf3b479504eb87ddc5158f673f,
+        type: 3}
       propertyPath: partNumber
       value: 3
       objectReference: {fileID: 0}
