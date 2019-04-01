@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using SimpleJSON;
+using TMPro;
 
 public class WEb : MonoBehaviour
 {
+    public TextMeshPro tm;
+    string kills;
 
     IEnumerator GetRequest(string uri)
     {
@@ -24,12 +27,14 @@ public class WEb : MonoBehaviour
                 //Debug.Log(":\nReceived: " + webRequest.downloadHandler.text);
                 JSONNode data = JSON.Parse(webRequest.downloadHandler.text);
                 Debug.Log(webRequest.downloadHandler.text);
-                string kills = data["stats"]["p2"]["kills"]["value"].Value;
+                kills = data["stats"]["p2"]["kills"]["value"].Value;
                 Debug.Log(kills);
                 int killsValue;
                 if(int.TryParse(kills, out killsValue))
                 {
                     killsValue = int.Parse(kills);
+                    tm.text = kills.ToString();
+                    Gamemanager.instance.killsString = kills.ToString();
                 }
                 Debug.Log("Amount of kills from Ninja = " + killsValue);
 
@@ -41,7 +46,7 @@ public class WEb : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(GetRequest("https://api.fortnitetracker.com/v1/profile/pc/Tfue"));
+        StartCoroutine(GetRequest("https://api.fortnitetracker.com/v1/profile/pc/Ninja"));
     }
 
     // Update is called once per frame

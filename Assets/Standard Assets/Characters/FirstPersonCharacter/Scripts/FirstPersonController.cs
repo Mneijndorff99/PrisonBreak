@@ -253,7 +253,22 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 return;
             }
+
+            if(hit.collider.gameObject.tag == "Enemy")
+            {
+                Debug.Log("You are dead");
+            }
             body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
         }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if(collision.gameObject.tag == "Enemy")
+            {
+                Debug.Log("You are dead");
+            }
+        }
+
+        
     }
 }

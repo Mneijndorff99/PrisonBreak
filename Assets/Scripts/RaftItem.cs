@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class RaftItem : Item
 {
-    public int points;
+    public int partNumber;
 
-    public RaftItem(string name, float weight, int points) : base(name, weight)
+    public RaftItem(string name, float weight, int partNumber) : base(name, weight)
     {
-        this.points = points;
+        this.partNumber = partNumber;
     }
 }

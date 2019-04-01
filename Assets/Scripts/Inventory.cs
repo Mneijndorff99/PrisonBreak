@@ -89,13 +89,15 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    public void PrintToConsole()
+    public void CheckForRaftItems()
     {
-        foreach (Item item in items)
+        Gamemanager.instance.totalRaftparts = 0;
+        for (int i = 0; i < items.Count; i++)
         {
-            Debug.Log(item.name + "" + item.weight);
+            if (items[i] is RaftItem)
+            {
+                Gamemanager.instance.totalRaftparts++;
+            }
         }
-
-        Debug.Log("Total Weight : " + totalWeight);
     }
 }

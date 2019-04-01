@@ -30,9 +30,20 @@ public class Door : MonoBehaviour, IInteract
 
     public void Open()
     {
-        if (id == -1 || Inventory.instance.HasKey(id))
+        if (id == -1 || Inventory.instance.HasKey(id) && id != 8)
         {
             open = !open;
+        }
+        else
+        {
+            StartCoroutine(TypeText.instance.ShowDialogText("You need a key to open this door!"));
+        }
+        if(id == 8)
+        {
+            if(Gamemanager.instance.input.text == Gamemanager.instance.killsString)
+            {
+                open = !open;
+            }
         }
     }
 

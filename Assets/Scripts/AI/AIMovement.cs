@@ -15,7 +15,7 @@ public class AIMovement : MonoBehaviour
     public AudioSource aud;
     bool canplay = true;
     bool seePlayer = false;
-    public enum States { Walking, Searching, Chasing };
+    public enum States { Walking, Searching, Chasing, Idle};
     public States state;
     Vector3 lastSeen;
     void Start()
@@ -29,10 +29,9 @@ public class AIMovement : MonoBehaviour
     void Update()
     {
         distance = Vector3.Distance(player.transform.position, transform.position);
-        if (distance < 10)
-        {
-
-        }
+        
+        //if (!navMesh.pathPending && navMesh.remainingDistance < 0.5f)
+        //    SetState(States.Idle);
         bool canSee = CanSeeTarget();
 
         if (canSee && state == States.Walking)
@@ -45,6 +44,10 @@ public class AIMovement : MonoBehaviour
             if (state == States.Searching)
             {
                 SetState(States.Walking);
+            }
+            if(state == States.Chasing)
+            {
+                SetState(States.Searching);
             }
         }
 
@@ -92,12 +95,19 @@ public class AIMovement : MonoBehaviour
         switch (newState)
         {
             case States.Walking:
+                navMesh.destination = wayPoints[Random.Range(0, wayPoints.Count)].transform.position;
+                ani.SetBool("walking", true);
+                aud.Stop();
                 break;
             case States.Searching:
                 navMesh.SetDestination(lastSeen);
                 break;
             case States.Chasing:
+                aud.Play();
                 lastSeen = player.transform.position;
+                break;
+            case States.Idle:
+                ani.SetBool("walking", false);
                 break;
         }
 
@@ -113,11 +123,11 @@ public class AIMovement : MonoBehaviour
         {
             if (hit.collider.gameObject.CompareTag("Player"))
             {
-                Debug.Log("I hitted the player");
+                //Debug.Log("I hitted the player");
                 float angle = Vector3.Angle(transform.forward, direction);
                 if (angle < fieldOfView / 2)
                 {
-                    Debug.Log("the player is in my FOV");
+                    //Debug.Log("the player is in my FOV");
                     return true;
                 }
                 else
@@ -132,7 +142,7 @@ public class AIMovement : MonoBehaviour
         }
         else
         {
-            Debug.Log("I See nothing");
+            //Debug.Log("I See nothing");
             return false;
         }
     }
@@ -154,9 +164,12 @@ public class AIMovement : MonoBehaviour
                 Vector3 destination = wayPoints[Random.Range(0, wayPoints.Count)].transform.position;
                 Debug.Log(destination);
                 navMesh.SetDestination(destination);
+                ani.SetBool("Walking", false);
+                
             }
 
             yield return new WaitForSeconds(Random.Range(20, 30));
+            SetState(States.Walking);
         }
 
     }

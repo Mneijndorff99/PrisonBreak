@@ -21,14 +21,11 @@ public class Tests : MonoBehaviour
         Debug.Log("Adding Anvil succes : " + Inventory.instance.AddItem(anvil)); 
         Debug.Log("");
         Debug.Log("Inventory: ");
-        Inventory.instance.PrintToConsole();
 
         Inventory.instance.RemoveItem(bonus);
         Debug.Log("INVENTORY AFTER REMOVING");
-        Inventory.instance.PrintToConsole();
         Debug.Log("INVENTORY AFTER Fake REMOVING");
         Inventory.instance.RemoveItem(anvil);
-        Inventory.instance.PrintToConsole();
 
     }
 

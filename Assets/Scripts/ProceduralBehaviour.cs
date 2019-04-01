@@ -42,8 +42,8 @@ public class ProceduralBehaviour : MonoBehaviour
         Generate();
         for (int i = 0; i < 3; i++)
         {
-            int xAs = Random.Range(0, worldSize);
-            int yAs = Random.Range(0, worldSize);
+            int xAs = Random.Range(0, 600);
+            int yAs = Random.Range(0, 600);
 
             Vector3 pos = new Vector3(xAs, 0, yAs);
 

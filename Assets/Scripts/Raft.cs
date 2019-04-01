@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Raft : PickUp
 {
-    public int points;
+    public int partNumber;
 
     protected override Item CreateItem()
     {
-        return new BonusItem(objectName, weight, points);
+        return new RaftItem(objectName, weight, partNumber);
     }
 }

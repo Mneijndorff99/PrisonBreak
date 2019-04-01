@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     public void SetInventoryVisible(bool value)
     {
         InventoryUI.instance.gameObject.SetActive(value);
+        Gamemanager.instance.input.gameObject.SetActive(value);
         GetComponent<FirstPersonController>().enabled = !value;
         Cursor.lockState = value ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = value ? Cursor.visible = true : Cursor.visible = false;
@@ -45,6 +46,19 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(r, out hit, range, ignorePlayer))
         {
+
+            if(hit.collider.gameObject.tag == "Escape")
+            {
+                Inventory.instance.CheckForRaftItems();
+                if(Gamemanager.instance.totalRaftparts == 3)
+                {
+                    StartCoroutine(TypeText.instance.ShowDialogText("You have to find al the raft parts to escape this prison!"));
+                }
+                else
+                {
+                    StartCoroutine(TypeText.instance.ShowDialogText("You have to find al the raft parts to escape this prison!"));
+                }
+            }
             //Debug.Log("Hit " + hit.collider.gameObject.name);
             IInteract i = hit.collider.gameObject.GetComponent<IInteract>();
             if (i != null)
@@ -53,4 +67,6 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    
 }
